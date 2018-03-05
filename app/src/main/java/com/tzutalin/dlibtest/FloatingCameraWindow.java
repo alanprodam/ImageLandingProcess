@@ -41,6 +41,7 @@ import java.lang.ref.WeakReference;
  */
 public class FloatingCameraWindow {
     private static final String TAG = "FloatingCameraWindow";
+
     private Context mContext;
     private WindowManager.LayoutParams mWindowParam;
     private WindowManager mWindowManager;

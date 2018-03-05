@@ -34,8 +34,7 @@ public class TrasparentTitleView extends View {
     public TrasparentTitleView(final Context context, final AttributeSet set) {
         super(context, set);
 
-        mTextSizePx =
-                TypedValue.applyDimension(
+        mTextSizePx = TypedValue.applyDimension(
                         TypedValue.COMPLEX_UNIT_DIP, TEXT_SIZE_DIP, getResources().getDisplayMetrics());
         mFgPaint = new Paint();
         mFgPaint.setTextSize(mTextSizePx);

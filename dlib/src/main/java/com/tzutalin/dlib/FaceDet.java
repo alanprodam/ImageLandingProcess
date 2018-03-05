@@ -27,6 +27,7 @@ public class FaceDet {
             System.loadLibrary("android_dlib");
             jniNativeClassInit();
             Log.d(TAG, "jniNativeClassInit success");
+
         } catch (UnsatisfiedLinkError e) {
             Log.e(TAG, "library not found");
         }

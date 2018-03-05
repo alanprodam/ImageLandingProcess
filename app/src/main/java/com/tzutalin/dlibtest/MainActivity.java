@@ -49,7 +49,7 @@ import hugo.weaving.DebugLog;
 import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
-    private static final int RESULT_LOAD_IMG = 1;
+
     private static final int REQUEST_CODE_PERMISSION = 2;
 
     private static final String TAG = "MainActivity";
@@ -62,16 +62,8 @@ public class MainActivity extends AppCompatActivity {
     };
 
     // UI
-    private ProgressDialog mDialog;
-    private MaterialListView mListView;
-    private FloatingActionButton mFabActionBt;
     private FloatingActionButton mFabCamActionBt;
     private Toolbar mToolbar;
-
-    private String mTestImgPath;
-    private FaceDet mFaceDet;
-    private PedestrianDet mPersonDet;
-    private List<Card> mCard = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -79,7 +71,6 @@ public class MainActivity extends AppCompatActivity {
 
         Log.d(TAG,"Info-started2");
         setContentView(R.layout.activity_main);
-        mListView = (MaterialListView) findViewById(R.id.material_listview);
         setSupportActionBar(mToolbar);
         // Just use hugo to print log
         isExternalStorageWritable();
@@ -96,20 +87,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     protected void setupUI() {
-        mListView = (MaterialListView) findViewById(R.id.material_listview);
-        mFabActionBt = (FloatingActionButton) findViewById(R.id.fab);
+
         mFabCamActionBt = (FloatingActionButton) findViewById(R.id.fab_cam);
         mToolbar = (Toolbar) findViewById(R.id.toolbar);
-
-        mFabActionBt.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // launch Gallery
-                Toast.makeText(MainActivity.this, "Pick one image", Toast.LENGTH_SHORT).show();
-                Intent galleryIntent = new Intent(Intent.ACTION_PICK, android.provider.MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(galleryIntent, RESULT_LOAD_IMG);
-            }
-        });
 
         mFabCamActionBt.setOnClickListener(new View.OnClickListener() {
             @Override
