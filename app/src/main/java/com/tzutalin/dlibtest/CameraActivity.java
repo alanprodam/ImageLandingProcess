@@ -22,6 +22,7 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.WindowManager;
 import android.widget.Toast;
 
@@ -30,11 +31,16 @@ import android.widget.Toast;
  */
 public class CameraActivity extends Activity {
 
+    private static final String TAG = CameraActivity.class.getName();
+
     private static int OVERLAY_PERMISSION_REQ_CODE = 1;
 
     @Override
     protected void onCreate(final Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        Log.d(TAG,"Info-started3");
+
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
         setContentView(R.layout.activity_camera);

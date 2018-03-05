@@ -16,6 +16,7 @@
 
 package com.tzutalin.dlibtest;
 
+import android.app.Activity;
 import android.app.Application;
 import android.util.Log;
 
@@ -25,9 +26,15 @@ import timber.log.Timber;
  * Created by tzutalin on 2017/2/23.
  */
 public class DlibDemoApp extends Application {
+
+    private static final String TAG = DlibDemoApp.class.getName();
+
+
     @Override
     public void onCreate() {
         super.onCreate();
+
+        Log.d(TAG,"Info-started");
 
         if (BuildConfig.DEBUG) {
             Timber.plant(new Timber.DebugTree());
