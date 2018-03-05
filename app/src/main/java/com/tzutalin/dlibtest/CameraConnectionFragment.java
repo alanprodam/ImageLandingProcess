@@ -73,7 +73,7 @@ public class CameraConnectionFragment extends Fragment {
      * containing a DESIRED_SIZE x DESIRED_SIZE square.
      */
     private static final int MINIMUM_PREVIEW_SIZE = 320;
-    private static final String TAG = "CameraConnectionFragment";
+    private static final String TAG = CameraConnectionFragment.class.getName();
 
     private TrasparentTitleView mScoreView;
 
@@ -255,8 +255,7 @@ public class CameraConnectionFragment extends Fragment {
      */
     @SuppressLint("LongLogTag")
     @DebugLog
-    private static Size chooseOptimalSize(
-            final Size[] choices, final int width, final int height, final Size aspectRatio) {
+    private static Size chooseOptimalSize(final Size[] choices, final int width, final int height, final Size aspectRatio) {
         // Collect the supported resolutions that are at least as big as the preview Surface
         final List<Size> bigEnough = new ArrayList<Size>();
         for (final Size option : choices) {
@@ -590,7 +589,7 @@ public class CameraConnectionFragment extends Fragment {
             Timber.tag(TAG).e("Exception!", e);
         }
 
-        mOnGetPreviewListener.initialize(getActivity().getApplicationContext(), getActivity().getAssets(), mScoreView, inferenceHandler);
+        mOnGetPreviewListener.initialize(getActivity().getApplicationContext(), mScoreView, inferenceHandler);
     }
 
     /**

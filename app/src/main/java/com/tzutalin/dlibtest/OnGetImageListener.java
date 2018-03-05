@@ -76,9 +76,9 @@ public class OnGetImageListener implements OnImageAvailableListener {
 
     public void initialize(
             final Context context,
-            final AssetManager assetManager,
             final TrasparentTitleView scoreView,
             final Handler handler) {
+
         this.mContext = context;
         this.mTransparentTitleView = scoreView;
         this.mInferenceHandler = handler;
