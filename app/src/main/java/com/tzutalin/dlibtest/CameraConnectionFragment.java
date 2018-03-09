@@ -68,15 +68,16 @@ import timber.log.Timber;
 
 public class CameraConnectionFragment extends Fragment {
 
+    static {
+        System.loadLibrary("MyOpenCVLibs");
+    }
+
     /**
      * The camera preview size will be chosen to be the smallest frame by pixel size capable of
      * containing a DESIRED_SIZE x DESIRED_SIZE square.
      */
     private static final int MINIMUM_PREVIEW_SIZE = 320;
     private static final String TAG = CameraConnectionFragment.class.getName();
-
-    private TrasparentTitleView mScoreView;
-
     /**
      * Conversion from screen rotation to JPEG orientation.
      */
@@ -291,7 +292,6 @@ public class CameraConnectionFragment extends Fragment {
     @Override
     public void onViewCreated(final View view, final Bundle savedInstanceState) {
         textureView = (AutoFitTextureView) view.findViewById(R.id.texture);
-        mScoreView = (TrasparentTitleView) view.findViewById(R.id.results);
     }
 
     @Override
@@ -384,8 +384,7 @@ public class CameraConnectionFragment extends Fragment {
                 // Danger, W.R.! Attempting to use too large a preview size could  exceed the camera
                 // bus' bandwidth limitation, resulting in gorgeous previews but the storage of
                 // garbage capture data.
-                previewSize =
-                        chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class), width, height, largest);
+                previewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class), width, height, largest);
 
                 // We fit the aspect ratio of TextureView to the size of preview we picked.
                 final int orientation = getResources().getConfiguration().orientation;
@@ -396,6 +395,8 @@ public class CameraConnectionFragment extends Fragment {
                 }
 
                 CameraConnectionFragment.this.cameraId = cameraId;
+
+
                 return;
             }
         } catch (final CameraAccessException e) {
@@ -540,9 +541,8 @@ public class CameraConnectionFragment extends Fragment {
             Timber.tag(TAG).i("Opening camera preview: " + previewSize.getWidth() + "x" + previewSize.getHeight());
 
             // Create the reader for the preview frames.
-            previewReader =
-                    ImageReader.newInstance(
-                            previewSize.getWidth(), previewSize.getHeight(), ImageFormat.YUV_420_888, 2);
+            previewReader = ImageReader.newInstance(previewSize.getWidth(), previewSize.getHeight(), ImageFormat.YUV_420_888, 2);
+
 
             previewReader.setOnImageAvailableListener(mOnGetPreviewListener, backgroundHandler);
             previewRequestBuilder.addTarget(previewReader.getSurface());
@@ -551,7 +551,6 @@ public class CameraConnectionFragment extends Fragment {
             cameraDevice.createCaptureSession(
                     Arrays.asList(surface, previewReader.getSurface()),
                     new CameraCaptureSession.StateCallback() {
-
                         @Override
                         public void onConfigured(final CameraCaptureSession cameraCaptureSession) {
                             // The camera is already closed
@@ -572,8 +571,7 @@ public class CameraConnectionFragment extends Fragment {
 
                                 // Finally, we start displaying the camera preview.
                                 previewRequest = previewRequestBuilder.build();
-                                captureSession.setRepeatingRequest(
-                                        previewRequest, captureCallback, backgroundHandler);
+                                captureSession.setRepeatingRequest(previewRequest, captureCallback, backgroundHandler);
                             } catch (final CameraAccessException e) {
                                 Timber.tag(TAG).e("Exception!", e);
                             }
@@ -589,7 +587,7 @@ public class CameraConnectionFragment extends Fragment {
             Timber.tag(TAG).e("Exception!", e);
         }
 
-        mOnGetPreviewListener.initialize(getActivity().getApplicationContext(), mScoreView, inferenceHandler);
+        mOnGetPreviewListener.initialize(getActivity().getApplicationContext(), inferenceHandler);
     }
 
     /**

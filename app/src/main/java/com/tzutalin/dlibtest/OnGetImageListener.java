@@ -43,6 +43,10 @@ import com.tzutalin.dlib.VisionDetRet;
 
 import junit.framework.Assert;
 
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.Scalar;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -51,10 +55,9 @@ import java.util.List;
  * Class that takes in preview frames and converts the image to Bitmaps to process with dlib lib.
  */
 public class OnGetImageListener implements OnImageAvailableListener {
-    private static final boolean SAVE_PREVIEW_BITMAP = false;
 
     private static final int INPUT_SIZE = 224;
-    private static final String TAG = "OnGetImageListener";
+    private static final String TAG = OnGetImageListener.class.getName();
 
     private int mScreenRotation = 90;
 
@@ -70,17 +73,14 @@ public class OnGetImageListener implements OnImageAvailableListener {
 
     private Context mContext;
     private FaceDet mFaceDet;
-    private TrasparentTitleView mTransparentTitleView;
     private FloatingCameraWindow mWindow;
     private Paint mFaceLandmardkPaint;
 
     public void initialize(
             final Context context,
-            final TrasparentTitleView scoreView,
             final Handler handler) {
 
         this.mContext = context;
-        this.mTransparentTitleView = scoreView;
         this.mInferenceHandler = handler;
         mFaceDet = new FaceDet(Constants.getFaceShapeModelPath());
         mWindow = new FloatingCameraWindow(mContext);
@@ -90,15 +90,13 @@ public class OnGetImageListener implements OnImageAvailableListener {
         mFaceLandmardkPaint.setStrokeWidth(2);
         mFaceLandmardkPaint.setStyle(Paint.Style.STROKE);
 
-        mWindow.setFPS(120);
-        mWindow.setMoreInformation("what?");
     }
 
     public void deInitialize() {
         synchronized (OnGetImageListener.this) {
-            if (mFaceDet != null) {
-                mFaceDet.release();
-            }
+//            if (mFaceDet != null) {
+//                mFaceDet.release();
+//            }
 
             if (mWindow != null) {
                 mWindow.release();
@@ -221,47 +219,42 @@ public class OnGetImageListener implements OnImageAvailableListener {
 
         drawResizedBitmap(mRGBframeBitmap, mCroppedBitmap);
 
-        if (SAVE_PREVIEW_BITMAP) {
-            ImageUtils.saveBitmap(mCroppedBitmap);
-        }
-
         mInferenceHandler.post(
                 new Runnable() {
                     @Override
                     public void run() {
-                        if (!new File(Constants.getFaceShapeModelPath()).exists()) {
-                            mTransparentTitleView.setText("Copying landmark model to " + Constants.getFaceShapeModelPath());
-                            FileUtils.copyFileFromRawToOthers(mContext, R.raw.shape_predictor_68_face_landmarks, Constants.getFaceShapeModelPath());
-                        }
 
                         long startTime = System.currentTimeMillis();
-                        List<VisionDetRet> results;
+//                        List<VisionDetRet> results;
                         synchronized (OnGetImageListener.this) {
-                            results = mFaceDet.detect(mCroppedBitmap);
+                            Mat mRgba = new Mat(640, 480, CvType.CV_8UC4, Scalar.all(255));
+
+
+                            //results = mFaceDet.detect(mCroppedBitmap);
                         }
                         long endTime = System.currentTimeMillis();
-                        mTransparentTitleView.setText("Time cost: " + String.valueOf((endTime - startTime) / 1000f) + " sec");
+                        Log.d(TAG,"Time cost: " + String.valueOf((endTime - startTime) / 1000f) + " sec");
                         // Draw on bitmap
-                        if (results != null) {
-                            for (final VisionDetRet ret : results) {
-                                float resizeRatio = 1.0f;
-                                Rect bounds = new Rect();
-                                bounds.left = (int) (ret.getLeft() * resizeRatio);
-                                bounds.top = (int) (ret.getTop() * resizeRatio);
-                                bounds.right = (int) (ret.getRight() * resizeRatio);
-                                bounds.bottom = (int) (ret.getBottom() * resizeRatio);
-                                Canvas canvas = new Canvas(mCroppedBitmap);
-                                canvas.drawRect(bounds, mFaceLandmardkPaint);
-
-                                // Draw landmark
-                                ArrayList<Point> landmarks = ret.getFaceLandmarks();
-                                for (Point point : landmarks) {
-                                    int pointX = (int) (point.x * resizeRatio);
-                                    int pointY = (int) (point.y * resizeRatio);
-                                    canvas.drawCircle(pointX, pointY, 2, mFaceLandmardkPaint);
-                                }
-                            }
-                        }
+//                        if (results != null) {
+//                            for (final VisionDetRet ret : results) {
+//                                float resizeRatio = 1.0f;
+//                                Rect bounds = new Rect();
+//                                bounds.left = (int) (ret.getLeft() * resizeRatio);
+//                                bounds.top = (int) (ret.getTop() * resizeRatio);
+//                                bounds.right = (int) (ret.getRight() * resizeRatio);
+//                                bounds.bottom = (int) (ret.getBottom() * resizeRatio);
+//                                Canvas canvas = new Canvas(mCroppedBitmap);
+//                                canvas.drawRect(bounds, mFaceLandmardkPaint);
+//
+//                                // Draw landmark
+//                                ArrayList<Point> landmarks = ret.getFaceLandmarks();
+//                                for (Point point : landmarks) {
+//                                    int pointX = (int) (point.x * resizeRatio);
+//                                    int pointY = (int) (point.y * resizeRatio);
+//                                    canvas.drawCircle(pointX, pointY, 2, mFaceLandmardkPaint);
+//                                }
+//                            }
+//                        }
 
                         mWindow.setRGBBitmap(mCroppedBitmap);
                         mIsComputing = false;
