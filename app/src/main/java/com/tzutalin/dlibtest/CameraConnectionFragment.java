@@ -148,8 +148,7 @@ public class CameraConnectionFragment extends Fragment {
      * {@link android.hardware.camera2.CameraDevice.StateCallback}
      * is called when {@link CameraDevice} changes its state.
      */
-    private final CameraDevice.StateCallback stateCallback =
-            new CameraDevice.StateCallback() {
+    private final CameraDevice.StateCallback stateCallback = new CameraDevice.StateCallback() {
                 @Override
                 public void onOpened(final CameraDevice cd) {
                     // This method is called when the camera is opened.  We start camera preview here.
@@ -174,6 +173,7 @@ public class CameraConnectionFragment extends Fragment {
                     cameraOpenCloseLock.release();
                     cd.close();
                     cameraDevice = null;
+
                     final Activity activity = getActivity();
                     if (null != activity) {
                         activity.finish();
@@ -542,7 +542,6 @@ public class CameraConnectionFragment extends Fragment {
 
             // Create the reader for the preview frames.
             previewReader = ImageReader.newInstance(previewSize.getWidth(), previewSize.getHeight(), ImageFormat.YUV_420_888, 2);
-
 
             previewReader.setOnImageAvailableListener(mOnGetPreviewListener, backgroundHandler);
             previewRequestBuilder.addTarget(previewReader.getSurface());

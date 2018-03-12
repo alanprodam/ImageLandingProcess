@@ -18,7 +18,6 @@ JNIEXPORT jint JNICALL Java_com_tzutalin_dlibtest_nativeclass_OpencvNativeClass_
 
     retVal = (jint)conv;
 
-
     return retVal;
 }
 
@@ -39,7 +38,6 @@ JNIEXPORT void JNICALL Java_com_tzutalin_dlibtest_nativeclass_OpencvNativeClass_
 
         LOGD( "Numero de Features: %d", points1.size());
     }
-
 
 }
 

@@ -21,6 +21,7 @@ import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -40,12 +41,15 @@ import android.view.WindowManager;
 import com.tzutalin.dlib.Constants;
 import com.tzutalin.dlib.FaceDet;
 import com.tzutalin.dlib.VisionDetRet;
+import com.tzutalin.dlibtest.nativeclass.OpencvNativeClass;
 
 import junit.framework.Assert;
 
+import org.opencv.android.Utils;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -112,7 +116,7 @@ public class OnGetImageListener implements OnImageAvailableListener {
         getOrient.getSize(point);
         int screen_width = point.x;
         int screen_height = point.y;
-        Log.d(TAG, String.format("screen size (%d,%d)", screen_width, screen_height));
+        //Log.d(TAG, String.format("screen size (%d,%d)", screen_width, screen_height));
         if (screen_width < screen_height) {
             orientation = Configuration.ORIENTATION_PORTRAIT;
             mScreenRotation = 90;
@@ -145,6 +149,31 @@ public class OnGetImageListener implements OnImageAvailableListener {
         canvas.drawBitmap(src, matrix, null);
     }
 
+    private Mat convertBitmaptoMat(Bitmap rgbaImage){
+
+        // convert Java Bitmap into OpenCV Mat
+        Mat rgbaMat = new Mat(rgbaImage.getWidth(), rgbaImage.getHeight(), CvType.CV_8UC4, Scalar.all(255));
+        Bitmap bm32 = rgbaImage.copy(Config.ARGB_8888,true);
+        Utils.bitmapToMat(bm32,rgbaMat);
+
+        Mat grayMat = new Mat (rgbaImage.getHeight(), rgbaImage.getWidth(), CvType.CV_8UC1, Scalar.all(255));
+        Imgproc.cvtColor(rgbaMat, grayMat, Imgproc.COLOR_RGB2GRAY, 1);
+
+        //Mat rgbMat = new Mat(rgbaImage.getWidth(), rgbaImage.getHeight(), CvType.CV_8UC3, Scalar.all(255));
+        //Imgproc.cvtColor(rgbaMat, rgbMat, Imgproc.COLOR_RGB2BGR, 3);
+
+        return grayMat;
+    }
+
+    private Bitmap converMattoBitmap(Mat rgbaMat){
+
+        Bitmap bmOutput = Bitmap.createBitmap(rgbaMat.width(),rgbaMat.height(), Config.ARGB_8888);
+        //Bitmap bmOutput = Bitmap.createBitmap(rgbaMat.rows(),rgbaMat.cols(), Config.ARGB_4444);
+        Utils.matToBitmap(rgbaMat,bmOutput);
+
+        return bmOutput;
+    }
+
     @Override
     public void onImageAvailable(final ImageReader reader) {
         Image image = null;
@@ -172,6 +201,7 @@ public class OnGetImageListener implements OnImageAvailableListener {
                 mPreviewHeight = image.getHeight();
 
                 Log.d(TAG, String.format("Initializing[mPreviewWdith] at size %dx%d", mPreviewWdith, mPreviewHeight));
+
                 mRGBBytes = new int[mPreviewWdith * mPreviewHeight];
                 mRGBframeBitmap = Bitmap.createBitmap(mPreviewWdith, mPreviewHeight, Config.ARGB_8888);
                 mCroppedBitmap = Bitmap.createBitmap(INPUT_SIZE, INPUT_SIZE, Config.ARGB_8888);
@@ -191,6 +221,8 @@ public class OnGetImageListener implements OnImageAvailableListener {
             final int yRowStride = planes[0].getRowStride();
             final int uvRowStride = planes[1].getRowStride();
             final int uvPixelStride = planes[1].getPixelStride();
+
+            // convert image YUV420 to ARGB8888
             ImageUtils.convertYUV420ToARGB8888(
                     mYUVBytes[0],
                     mYUVBytes[1],
@@ -215,7 +247,7 @@ public class OnGetImageListener implements OnImageAvailableListener {
 
         mRGBframeBitmap.setPixels(mRGBBytes, 0, mPreviewWdith, 0, 0, mPreviewWdith, mPreviewHeight);
 
-        Log.d(TAG, String.format("Initializing[mRGBframeBitmap] at size %dx%d", mRGBframeBitmap.getWidth(), mRGBframeBitmap.getHeight()));
+        //Log.d(TAG, String.format("Initializing[mRGBframeBitmap] at size %dx%d", mRGBframeBitmap.getWidth(), mRGBframeBitmap.getHeight()));
 
         drawResizedBitmap(mRGBframeBitmap, mCroppedBitmap);
 
@@ -227,8 +259,9 @@ public class OnGetImageListener implements OnImageAvailableListener {
                         long startTime = System.currentTimeMillis();
 //                        List<VisionDetRet> results;
                         synchronized (OnGetImageListener.this) {
-                            Mat mRgba = new Mat(640, 480, CvType.CV_8UC4, Scalar.all(255));
+                            Mat matInput = convertBitmaptoMat(mCroppedBitmap);
 
+                            mCroppedBitmap = converMattoBitmap(matInput);
 
                             //results = mFaceDet.detect(mCroppedBitmap);
                         }

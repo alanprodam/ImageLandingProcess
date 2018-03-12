@@ -7,6 +7,7 @@
 #include <android/log.h>
 #include <iostream>
 #include <fstream>
+#include <android/bitmap.h>
 
 #include <stdio.h>
 #include <stdlib.h>
