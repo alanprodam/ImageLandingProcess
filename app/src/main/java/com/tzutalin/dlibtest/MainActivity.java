@@ -6,47 +6,18 @@ package com.tzutalin.dlibtest;
 
 import android.Manifest;
 import android.app.Activity;
-import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.Point;
-import android.graphics.Rect;
-import android.graphics.drawable.BitmapDrawable;
-import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Environment;
-import android.provider.MediaStore;
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.View;
 import android.widget.Toast;
 
-import com.dexafree.materialList.card.Card;
-import com.dexafree.materialList.card.provider.BigImageCardProvider;
-import com.dexafree.materialList.view.MaterialListView;
-import com.tzutalin.dlib.Constants;
-import com.tzutalin.dlib.FaceDet;
-import com.tzutalin.dlib.PedestrianDet;
-import com.tzutalin.dlib.VisionDetRet;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
-
 import hugo.weaving.DebugLog;
-import timber.log.Timber;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -63,15 +34,13 @@ public class MainActivity extends AppCompatActivity {
 
     // UI
     private FloatingActionButton mFabCamActionBt;
-    private Toolbar mToolbar;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Log.d(TAG,"Info-started2");
         setContentView(R.layout.activity_main);
-        setSupportActionBar(mToolbar);
+
         // Just use hugo to print log
         isExternalStorageWritable();
         isExternalStorageReadable();
@@ -89,18 +58,13 @@ public class MainActivity extends AppCompatActivity {
     protected void setupUI() {
 
         mFabCamActionBt = (FloatingActionButton) findViewById(R.id.fab_cam);
-        mToolbar = (Toolbar) findViewById(R.id.toolbar);
 
         mFabCamActionBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 startActivity(new Intent(MainActivity.this, CameraActivity.class));
             }
-        });
-
-        mToolbar.setTitle(getString(R.string.app_name));
-        Toast.makeText(MainActivity.this, getString(R.string.description_info), Toast.LENGTH_LONG).show();
-    }
+        });}
 
     /**
      * Checks if the app has permission to write to device storage or open camera

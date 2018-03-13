@@ -60,7 +60,7 @@ import java.util.List;
  */
 public class OnGetImageListener implements OnImageAvailableListener {
 
-    private static final int INPUT_SIZE = 224;
+    private static final int INPUT_SIZE = 340;
     private static final String TAG = OnGetImageListener.class.getName();
 
     private int mScreenRotation = 90;
@@ -261,33 +261,15 @@ public class OnGetImageListener implements OnImageAvailableListener {
                         synchronized (OnGetImageListener.this) {
                             Mat matInput = convertBitmaptoMat(mCroppedBitmap);
 
+                            OpencvNativeClass.FindFeatures(matInput.getNativeObjAddr());
+
                             mCroppedBitmap = converMattoBitmap(matInput);
 
                             //results = mFaceDet.detect(mCroppedBitmap);
                         }
                         long endTime = System.currentTimeMillis();
-                        Log.d(TAG,"Time cost: " + String.valueOf((endTime - startTime) / 1000f) + " sec");
-                        // Draw on bitmap
-//                        if (results != null) {
-//                            for (final VisionDetRet ret : results) {
-//                                float resizeRatio = 1.0f;
-//                                Rect bounds = new Rect();
-//                                bounds.left = (int) (ret.getLeft() * resizeRatio);
-//                                bounds.top = (int) (ret.getTop() * resizeRatio);
-//                                bounds.right = (int) (ret.getRight() * resizeRatio);
-//                                bounds.bottom = (int) (ret.getBottom() * resizeRatio);
-//                                Canvas canvas = new Canvas(mCroppedBitmap);
-//                                canvas.drawRect(bounds, mFaceLandmardkPaint);
-//
-//                                // Draw landmark
-//                                ArrayList<Point> landmarks = ret.getFaceLandmarks();
-//                                for (Point point : landmarks) {
-//                                    int pointX = (int) (point.x * resizeRatio);
-//                                    int pointY = (int) (point.y * resizeRatio);
-//                                    canvas.drawCircle(pointX, pointY, 2, mFaceLandmardkPaint);
-//                                }
-//                            }
-//                        }
+                        //Log.d(TAG,"Time cost: " + String.valueOf((endTime - startTime) / 10000f) + " sec");
+                        Log.d(TAG,"FPS cost: " + String.valueOf(1/((endTime - startTime) / 1000f)) + " framas/sec");
 
                         mWindow.setRGBBitmap(mCroppedBitmap);
                         mIsComputing = false;

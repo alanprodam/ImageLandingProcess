@@ -10,6 +10,6 @@ public class OpencvNativeClass {
 
     public native static int covertGray(long mRgba, long mGray);
 
-    public native static void FindFeatures(byte[] matAddrRgba);
+    public native static void FindFeatures(long matAddrRgba);
 
 }
