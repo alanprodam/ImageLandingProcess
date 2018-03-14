@@ -19,9 +19,14 @@ package com.tzutalin.dlibtest;
 import android.graphics.Bitmap;
 import android.os.Environment;
 import android.support.annotation.Keep;
+import android.util.Log;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import timber.log.Timber;
 
@@ -52,29 +57,71 @@ public class ImageUtils {
      * @param bitmap The bitmap to save.
      */
     public static void saveBitmap(final Bitmap bitmap) {
-        final String root =
-                Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "dlib";
-        Timber.tag(TAG).d(String.format("Saving %dx%d bitmap to %s.", bitmap.getWidth(), bitmap.getHeight(), root));
+
+        SimpleDateFormat timeStampFormat = new SimpleDateFormat("yyyy_MM_dd_HH_mm_ss");
+        String index;
+
+        Date d = new Date();
+        index = timeStampFormat.format(d);
+
+        final String root = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "dlib";
         final File myDir = new File(root);
 
-        if (!myDir.mkdirs()) {
-            Timber.tag(TAG).e("Make dir failed");
+        if (!myDir.exists()) {
+            myDir.mkdir();
+            Log.d(TAG, "criou pasta");
         }
 
-        final String fname = "preview.png";
-        final File file = new File(myDir, fname);
-        if (file.exists()) {
-            file.delete();
-        }
-        try {
-            final FileOutputStream out = new FileOutputStream(file);
-            bitmap.compress(Bitmap.CompressFormat.PNG, 99, out);
-            out.flush();
-            out.close();
-        } catch (final Exception e) {
-            Timber.tag(TAG).e("Exception!", e);
-        }
+            if(bitmap!=null){
+                try {
+                    File img = new File(myDir,index+".png");
+
+                    if (!img.exists()) {
+                        img.createNewFile();
+                    }
+
+                    FileOutputStream out = new FileOutputStream(img);
+                    bitmap.compress(Bitmap.CompressFormat.PNG, 80, out); // bmp is your Bitmap instance
+                    // PNG is a lossless format, the compression factor (100) is ignored
+
+                    Log.d(TAG, "index: "+index);
+
+                    out.flush();
+                    out.close();
+
+                }catch (FileNotFoundException erro) {
+                    Log.d(TAG, "Arquivo Não Encontrado!");
+                }catch (IOException erro) {
+                    erro.printStackTrace();
+                    Log.d(TAG, "Erro de entrada e Saída");
+                }
+            }
     }
+
+//    public static void saveBitmap(final Bitmap bitmap) {
+//
+//        final String root = Environment.getExternalStorageDirectory().getAbsolutePath() + File.separator + "dlib";
+//        Timber.tag(TAG).d(String.format("Saving %dx%d bitmap to %s.", bitmap.getWidth(), bitmap.getHeight(), root));
+//        final File myDir = new File(root);
+//
+//        if (!myDir.mkdirs()) {
+//            Timber.tag(TAG).e("Make dir failed");
+//        }
+//
+//        final String fname = "preview.png";
+//        final File file = new File(myDir, fname);
+//        if (file.exists()) {
+//            file.delete();
+//        }
+//        try {
+//            final FileOutputStream out = new FileOutputStream(file);
+//            bitmap.compress(Bitmap.CompressFormat.PNG, 80, out);
+//            out.flush();
+//            out.close();
+//        } catch (final Exception e) {
+//            Timber.tag(TAG).e("Exception!", e);
+//        }
+//    }
 
     /**
      * Converts YUV420 semi-planar data to ARGB 8888 data using the supplied width

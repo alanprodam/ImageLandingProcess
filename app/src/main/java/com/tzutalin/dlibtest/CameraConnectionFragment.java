@@ -492,12 +492,13 @@ public class CameraConnectionFragment extends Fragment {
             // Create the reader for the preview frames.
             previewReader = ImageReader.newInstance(previewSize.getWidth(), previewSize.getHeight(), ImageFormat.YUV_420_888, 2);
 
+            // Calls the setOnImageAvailableListener and add the previewReader Surface
             previewReader.setOnImageAvailableListener(mOnGetPreviewListener, backgroundHandler);
             previewRequestBuilder.addTarget(previewReader.getSurface());
 
-            previewRequestBuilder.set(
-                    CaptureRequest.CONTROL_MODE,
-                    CameraMetadata.INFO_SUPPORTED_HARDWARE_LEVEL_FULL);
+//            previewRequestBuilder.set(
+//                    CaptureRequest.CONTROL_MODE,
+//                    CameraMetadata.INFO_SUPPORTED_HARDWARE_LEVEL_FULL);
 
 //            Range<Integer> range2 = previewRequestBuilder.get(CameraCharacteristics.SENSOR_INFO_SENSITIVITY_RANGE);
 //            int max1 = range2.getUpper();//10000
@@ -525,20 +526,44 @@ public class CameraConnectionFragment extends Fragment {
 //                                        CaptureRequest.CONTROL_AF_MODE,
 //                                        CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
 
-                                // Flash is automatically enabled when necessary.
-//                                previewRequestBuilder.set(
-//                                        CaptureRequest.CONTROL_AE_MODE,
-//                                        CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
 
-                                // If you just turn off auto-exposure by either disabling all automatics:
+
+                                // AF is currently performing an AF scan initiated the camera device in a continuous autofocus mode.
                                 previewRequestBuilder.set(
-                                        CaptureRequest.CONTROL_MODE,
-                                        CaptureRequest.CONTROL_MODE_OFF);
+                                        CaptureRequest.CONTROL_AF_MODE,
+                                        CaptureRequest.CONTROL_AF_STATE_PASSIVE_SCAN);
 
-                                // If you just disabling auto-exposure, leaving auto-focus and auto-white-balance running:
+                                // The desired setting for the camera device's auto-exposure algorithm's antibanding compensation.
+                                previewRequestBuilder.set(
+                                        CaptureRequest.CONTROL_AE_ANTIBANDING_MODE,
+                                        CaptureRequest.CONTROL_AE_ANTIBANDING_MODE_AUTO);
+
+                                //
+                                previewRequestBuilder.set(
+                                        CaptureRequest.CONTROL_SCENE_MODE,
+                                        CaptureRequest.CONTROL_SCENE_MODE_ACTION);
+
+                                // Flash is automatically enabled when necessary.
                                 previewRequestBuilder.set(
                                         CaptureRequest.CONTROL_AE_MODE,
-                                        CaptureRequest.CONTROL_AE_MODE_OFF);
+                                        CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
+
+                                // The desired mode for the camera device's auto-exposure routine.
+                                previewRequestBuilder.set(
+                                        CaptureRequest.CONTROL_AE_MODE,
+                                        CaptureRequest.CONTROL_AE_MODE_ON_ALWAYS_FLASH);
+
+
+
+//                                // If you just turn off auto-exposure by either disabling all automatics:
+//                                previewRequestBuilder.set(
+//                                        CaptureRequest.CONTROL_MODE,
+//                                        CaptureRequest.CONTROL_MODE_OFF);
+//
+//                                // If you just disabling auto-exposure, leaving auto-focus and auto-white-balance running:
+//                                previewRequestBuilder.set(
+//                                        CaptureRequest.CONTROL_AE_MODE,
+//                                        CaptureRequest.CONTROL_AE_MODE_OFF);
 
                                 // Once you've disabled AE, you can manually control exposure time, sensitivity (ISO), and frame duration):
 //                                Long exposureTime;
@@ -562,7 +587,7 @@ public class CameraConnectionFragment extends Fragment {
                             showToast("Failed");
                         }
                     },
-                    null);
+                    backgroundHandler);
         } catch (final CameraAccessException e) {
             Timber.tag(TAG).e("Exception!", e);
         }

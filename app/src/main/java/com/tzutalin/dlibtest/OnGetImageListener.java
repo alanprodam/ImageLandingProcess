@@ -60,7 +60,8 @@ import java.util.List;
  */
 public class OnGetImageListener implements OnImageAvailableListener {
 
-    private static final int INPUT_SIZE = 340;
+    private static final int INPUT_WIDTH_SIZE = 320;
+    private static final int INPUT_HEIGTH_SIZE = 240;
     private static final String TAG = OnGetImageListener.class.getName();
 
     private int mScreenRotation = 90;
@@ -204,7 +205,7 @@ public class OnGetImageListener implements OnImageAvailableListener {
 
                 mRGBBytes = new int[mPreviewWdith * mPreviewHeight];
                 mRGBframeBitmap = Bitmap.createBitmap(mPreviewWdith, mPreviewHeight, Config.ARGB_8888);
-                mCroppedBitmap = Bitmap.createBitmap(INPUT_SIZE, INPUT_SIZE, Config.ARGB_8888);
+                mCroppedBitmap = Bitmap.createBitmap(mPreviewWdith, mPreviewHeight, Config.ARGB_8888);
 
                 Log.d(TAG, String.format("Initializing[mCroppedBitmap] at size %dx%d", mCroppedBitmap.getWidth(), mCroppedBitmap.getHeight()));
 
@@ -249,7 +250,9 @@ public class OnGetImageListener implements OnImageAvailableListener {
 
         //Log.d(TAG, String.format("Initializing[mRGBframeBitmap] at size %dx%d", mRGBframeBitmap.getWidth(), mRGBframeBitmap.getHeight()));
 
-        drawResizedBitmap(mRGBframeBitmap, mCroppedBitmap);
+        //drawResizedBitmap(mRGBframeBitmap, mCroppedBitmap);
+
+        mCroppedBitmap = mRGBframeBitmap;
 
         mInferenceHandler.post(
                 new Runnable() {
@@ -257,19 +260,21 @@ public class OnGetImageListener implements OnImageAvailableListener {
                     public void run() {
 
                         long startTime = System.currentTimeMillis();
+
                         synchronized (OnGetImageListener.this) {
+
                             Mat matInput = convertBitmaptoMat(mCroppedBitmap);
-
                             Mat matOutput = new Mat(mCroppedBitmap.getWidth(), mCroppedBitmap.getWidth(), CvType.CV_8UC1, Scalar.all(255));
-
                             OpencvNativeClass.covertGray(matInput.getNativeObjAddr(), matOutput.getNativeObjAddr());
                             OpencvNativeClass.FindFeatures(matOutput.getNativeObjAddr());
-
                             mCroppedBitmap = converMattoBitmap(matOutput);
+                            //ImageUtils.saveBitmap(mCroppedBitmap);
+
                         }
                         long endTime = System.currentTimeMillis();
-                        //Log.d(TAG,"Time cost: " + String.valueOf((endTime - startTime) / 10000f) + " sec");
-                        Log.d(TAG,"FPS cost: " + String.valueOf(1/((endTime - startTime) / 1000f)) + " framas/sec");
+                        Log.d(TAG,"Time cost: " + String.valueOf((endTime - startTime) / 10000f) + " sec");
+                        //Log.d(TAG,"FPS cost: " + String.valueOf(1/((endTime - startTime) / 10000f)) + " framas/sec");
+
 
                         mWindow.setRGBBitmap(mCroppedBitmap);
                         mIsComputing = false;

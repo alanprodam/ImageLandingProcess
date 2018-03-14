@@ -74,9 +74,15 @@ public class FloatingCameraWindow {
             mScreenMaxWidth = display.getWidth();
             mScreenMaxHeight = display.getHeight();
         }
-        // Default window size
-        mWindowWidth = mScreenMaxWidth / 2;
-        mWindowHeight = mScreenMaxHeight / 2;
+
+        /**
+         * Default window size (change the size of screen here)
+         */
+        mWindowWidth = mScreenMaxWidth;
+        mWindowHeight = mScreenMaxHeight;
+
+        Log.d(TAG, "mWindowWidth: " + mWindowWidth);
+        Log.d(TAG, "mWindowHeight: " + mWindowHeight);
 
         mWindowWidth = mWindowWidth > 0 && mWindowWidth < mScreenMaxWidth ? mWindowWidth : mScreenMaxWidth;
         mWindowHeight = mWindowHeight > 0 && mWindowHeight < mScreenMaxHeight ? mWindowHeight : mScreenMaxHeight;
@@ -223,6 +229,9 @@ public class FloatingCameraWindow {
 
             mColorView.getLayoutParams().width = colorMaxWidth;
             mColorView.getLayoutParams().height = colorMaxHeight;
+
+            Log.d(TAG, "colorMaxWidth: " + colorMaxWidth);
+            Log.d(TAG, "colorMaxHeight: " + colorMaxHeight);
         }
 
         @Override
