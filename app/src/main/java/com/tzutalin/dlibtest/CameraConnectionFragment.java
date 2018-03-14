@@ -36,6 +36,7 @@ import android.hardware.camera2.CameraCaptureSession;
 import android.hardware.camera2.CameraCharacteristics;
 import android.hardware.camera2.CameraDevice;
 import android.hardware.camera2.CameraManager;
+import android.hardware.camera2.CameraMetadata;
 import android.hardware.camera2.CaptureRequest;
 import android.hardware.camera2.CaptureResult;
 import android.hardware.camera2.TotalCaptureResult;
@@ -45,6 +46,8 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
 import android.support.v4.app.ActivityCompat;
+import android.util.Log;
+import android.util.Range;
 import android.util.Size;
 import android.util.SparseArray;
 import android.util.SparseIntArray;
@@ -66,6 +69,8 @@ import java.util.concurrent.TimeUnit;
 import hugo.weaving.DebugLog;
 import timber.log.Timber;
 
+import static android.hardware.camera2.CameraCharacteristics.*;
+
 public class CameraConnectionFragment extends Fragment {
 
     static {
@@ -76,20 +81,12 @@ public class CameraConnectionFragment extends Fragment {
      * The camera preview size will be chosen to be the smallest frame by pixel size capable of
      * containing a DESIRED_SIZE x DESIRED_SIZE square.
      */
-    private static final int MINIMUM_PREVIEW_SIZE = 320;
+    private static final int WIDTH_PREVIEW_SIZE = 640;
+    private static final int HEIGHT_PREVIEW_SIZE = 480;
     private static final String TAG = CameraConnectionFragment.class.getName();
-    /**
-     * Conversion from screen rotation to JPEG orientation.
-     */
-    private static final SparseIntArray ORIENTATIONS = new SparseIntArray();
+
     private static final String FRAGMENT_DIALOG = "dialog";
 
-    static {
-        ORIENTATIONS.append(Surface.ROTATION_0, 90);
-        ORIENTATIONS.append(Surface.ROTATION_90, 0);
-        ORIENTATIONS.append(Surface.ROTATION_180, 270);
-        ORIENTATIONS.append(Surface.ROTATION_270, 180);
-    }
 
     /**
      * {@link android.view.TextureView.SurfaceTextureListener} handles several lifecycle events on a
@@ -98,14 +95,12 @@ public class CameraConnectionFragment extends Fragment {
     private final TextureView.SurfaceTextureListener surfaceTextureListener =
             new TextureView.SurfaceTextureListener() {
                 @Override
-                public void onSurfaceTextureAvailable(
-                        final SurfaceTexture texture, final int width, final int height) {
-                    openCamera(width, height);
+                public void onSurfaceTextureAvailable(final SurfaceTexture texture, final int width, final int height) {
+                    openCamera();
                 }
 
                 @Override
-                public void onSurfaceTextureSizeChanged(
-                        final SurfaceTexture texture, final int width, final int height) {
+                public void onSurfaceTextureSizeChanged(final SurfaceTexture texture, final int width, final int height) {
                     configureTransform(width, height);
                 }
 
@@ -243,42 +238,6 @@ public class CameraConnectionFragment extends Fragment {
         }
     }
 
-    /**
-     * Given {@code choices} of {@code Size}s supported by a camera, chooses the smallest one whose
-     * width and height are at least as large as the respective requested values, and whose aspect
-     * ratio matches with the specified value.
-     *
-     * @param choices     The list of sizes that the camera supports for the intended output class
-     * @param width       The minimum desired width
-     * @param height      The minimum desired height
-     * @param aspectRatio The aspect ratio
-     * @return The optimal {@code Size}, or an arbitrary one if none were big enough
-     */
-    @SuppressLint("LongLogTag")
-    @DebugLog
-    private static Size chooseOptimalSize(final Size[] choices, final int width, final int height, final Size aspectRatio) {
-        // Collect the supported resolutions that are at least as big as the preview Surface
-        final List<Size> bigEnough = new ArrayList<Size>();
-        for (final Size option : choices) {
-            if (option.getHeight() >= MINIMUM_PREVIEW_SIZE && option.getWidth() >= MINIMUM_PREVIEW_SIZE) {
-                Timber.tag(TAG).i("Adding size: " + option.getWidth() + "x" + option.getHeight());
-                bigEnough.add(option);
-            } else {
-                Timber.tag(TAG).i("Not adding size: " + option.getWidth() + "x" + option.getHeight());
-            }
-        }
-
-        // Pick the smallest of those, assuming we found any
-        if (bigEnough.size() > 0) {
-            final Size chosenSize = Collections.min(bigEnough, new CompareSizesByArea());
-            Timber.tag(TAG).i("Chosen size: " + chosenSize.getWidth() + "x" + chosenSize.getHeight());
-            return chosenSize;
-        } else {
-            Timber.tag(TAG).e("Couldn't find any suitable preview size");
-            return choices[0];
-        }
-    }
-
     public static CameraConnectionFragment newInstance() {
         return new CameraConnectionFragment();
     }
@@ -309,7 +268,7 @@ public class CameraConnectionFragment extends Fragment {
         // a camera and start preview from here (otherwise, we wait until the surface is ready in
         // the SurfaceTextureListener).
         if (textureView.isAvailable()) {
-            openCamera(textureView.getWidth(), textureView.getHeight());
+            openCamera();
         } else {
             textureView.setSurfaceTextureListener(surfaceTextureListener);
         }
@@ -325,12 +284,10 @@ public class CameraConnectionFragment extends Fragment {
     /**
      * Sets up member variables related to camera.
      *
-     * @param width  The width of available size for camera preview
-     * @param height The height of available size for camera preview
      */
     @DebugLog
     @SuppressLint("LongLogTag")
-    private void setUpCameraOutputs(final int width, final int height) {
+    private void setUpCameraOutputs() {
         final Activity activity = getActivity();
         final CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
         try {
@@ -338,64 +295,55 @@ public class CameraConnectionFragment extends Fragment {
             // Check the facing types of camera devices
             for (final String cameraId : manager.getCameraIdList()) {
                 final CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
-                final Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
-                if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
-                    if (cameraFaceTypeMap.get(CameraCharacteristics.LENS_FACING_FRONT) != null) {
-                        cameraFaceTypeMap.append(CameraCharacteristics.LENS_FACING_FRONT, cameraFaceTypeMap.get(CameraCharacteristics.LENS_FACING_FRONT) + 1);
+                final Integer facing = characteristics.get(LENS_FACING);
+                if (facing != null && facing == LENS_FACING_FRONT) {
+                    if (cameraFaceTypeMap.get(LENS_FACING_FRONT) != null) {
+                        cameraFaceTypeMap.append(LENS_FACING_FRONT, cameraFaceTypeMap.get(LENS_FACING_FRONT) + 1);
                     } else {
-                        cameraFaceTypeMap.append(CameraCharacteristics.LENS_FACING_FRONT, 1);
+                        cameraFaceTypeMap.append(LENS_FACING_FRONT, 1);
                     }
                 }
 
-                if (facing != null && facing == CameraCharacteristics.LENS_FACING_BACK) {
-                    if (cameraFaceTypeMap.get(CameraCharacteristics.LENS_FACING_FRONT) != null) {
-                        cameraFaceTypeMap.append(CameraCharacteristics.LENS_FACING_BACK, cameraFaceTypeMap.get(CameraCharacteristics.LENS_FACING_BACK) + 1);
+                if (facing != null && facing == LENS_FACING_BACK) {
+                    if (cameraFaceTypeMap.get(LENS_FACING_FRONT) != null) {
+                        cameraFaceTypeMap.append(LENS_FACING_BACK, cameraFaceTypeMap.get(LENS_FACING_BACK) + 1);
                     } else {
-                        cameraFaceTypeMap.append(CameraCharacteristics.LENS_FACING_BACK, 1);
+                        cameraFaceTypeMap.append(LENS_FACING_BACK, 1);
                     }
                 }
             }
 
-            Integer num_facing_back_camera = cameraFaceTypeMap.get(CameraCharacteristics.LENS_FACING_BACK);
+            Integer num_facing_back_camera = cameraFaceTypeMap.get(LENS_FACING_BACK);
             for (final String cameraId : manager.getCameraIdList()) {
                 final CameraCharacteristics characteristics = manager.getCameraCharacteristics(cameraId);
-                final Integer facing = characteristics.get(CameraCharacteristics.LENS_FACING);
+                final Integer facing = characteristics.get(LENS_FACING);
                 // If facing back camera or facing external camera exist, we won't use facing front camera
                 if (num_facing_back_camera != null && num_facing_back_camera > 0) {
                     // We don't use a front facing camera in this sample if there are other camera device facing types
-                    if (facing != null && facing == CameraCharacteristics.LENS_FACING_FRONT) {
+                    if (facing != null && facing == LENS_FACING_FRONT) {
                         continue;
                     }
                 }
 
                 final StreamConfigurationMap map =
-                        characteristics.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+                        characteristics.get(SCALER_STREAM_CONFIGURATION_MAP);
 
                 if (map == null) {
                     continue;
                 }
 
-                // For still image captures, we use the largest available size.
-                final Size largest =
-                        Collections.max(
-                                Arrays.asList(map.getOutputSizes(ImageFormat.YUV_420_888)),
-                                new CompareSizesByArea());
+//                // For still image captures, we use the largest available size.
+//                final Size largest = Collections.max(
+//                                Arrays.asList(map.getOutputSizes(ImageFormat.YUV_420_888)),
+//                                new CompareSizesByArea());
 
                 // Danger, W.R.! Attempting to use too large a preview size could  exceed the camera
                 // bus' bandwidth limitation, resulting in gorgeous previews but the storage of
                 // garbage capture data.
-                previewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class), width, height, largest);
-
-                // We fit the aspect ratio of TextureView to the size of preview we picked.
-                final int orientation = getResources().getConfiguration().orientation;
-                if (orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                    textureView.setAspectRatio(previewSize.getWidth(), previewSize.getHeight());
-                } else {
-                    textureView.setAspectRatio(previewSize.getHeight(), previewSize.getWidth());
-                }
+                previewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class), WIDTH_PREVIEW_SIZE, HEIGHT_PREVIEW_SIZE);
+                Log.d(TAG,"setUpCameraOutputs: " + previewSize.getWidth() + "x" + previewSize.getHeight());
 
                 CameraConnectionFragment.this.cameraId = cameraId;
-
 
                 return;
             }
@@ -414,9 +362,9 @@ public class CameraConnectionFragment extends Fragment {
      */
     @SuppressLint("LongLogTag")
     @DebugLog
-    private void openCamera(final int width, final int height) {
-        setUpCameraOutputs(width, height);
-        configureTransform(width, height);
+    private void openCamera() {
+        setUpCameraOutputs();
+        configureTransform(WIDTH_PREVIEW_SIZE, HEIGHT_PREVIEW_SIZE);
         final Activity activity = getActivity();
         final CameraManager manager = (CameraManager) activity.getSystemService(Context.CAMERA_SERVICE);
         try {
@@ -538,13 +486,25 @@ public class CameraConnectionFragment extends Fragment {
             previewRequestBuilder = cameraDevice.createCaptureRequest(CameraDevice.TEMPLATE_PREVIEW);
             previewRequestBuilder.addTarget(surface);
 
-            Timber.tag(TAG).i("Opening camera preview: " + previewSize.getWidth() + "x" + previewSize.getHeight());
+            Timber.tag(TAG).i("CreateCameraPreviewSession: " + previewSize.getWidth() + "x" + previewSize.getHeight());
+            Log.d(TAG,"CreateCameraPreviewSession: " + previewSize.getWidth() + "x" + previewSize.getHeight());
 
             // Create the reader for the preview frames.
             previewReader = ImageReader.newInstance(previewSize.getWidth(), previewSize.getHeight(), ImageFormat.YUV_420_888, 2);
 
             previewReader.setOnImageAvailableListener(mOnGetPreviewListener, backgroundHandler);
             previewRequestBuilder.addTarget(previewReader.getSurface());
+
+            previewRequestBuilder.set(
+                    CaptureRequest.CONTROL_MODE,
+                    CameraMetadata.INFO_SUPPORTED_HARDWARE_LEVEL_FULL);
+
+//            Range<Integer> range2 = previewRequestBuilder.get(CameraCharacteristics.SENSOR_INFO_SENSITIVITY_RANGE);
+//            int max1 = range2.getUpper();//10000
+//            int min1 = range2.getLower();//100
+            //int iso = ((progress * (max1 - min1)) / 100 + min1);
+            // set the sensitivity of ISO
+            //previewRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, iso);
 
             // Here, we create a CameraCaptureSession for camera preview.
             cameraDevice.createCaptureSession(
@@ -561,12 +521,33 @@ public class CameraConnectionFragment extends Fragment {
                             captureSession = cameraCaptureSession;
                             try {
                                 // Auto focus should be continuous for camera preview.
-                                previewRequestBuilder.set(
-                                        CaptureRequest.CONTROL_AF_MODE,
-                                        CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+//                                previewRequestBuilder.set(
+//                                        CaptureRequest.CONTROL_AF_MODE,
+//                                        CaptureRequest.CONTROL_AF_MODE_CONTINUOUS_PICTURE);
+
                                 // Flash is automatically enabled when necessary.
+//                                previewRequestBuilder.set(
+//                                        CaptureRequest.CONTROL_AE_MODE,
+//                                        CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
+
+                                // If you just turn off auto-exposure by either disabling all automatics:
                                 previewRequestBuilder.set(
-                                        CaptureRequest.CONTROL_AE_MODE, CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
+                                        CaptureRequest.CONTROL_MODE,
+                                        CaptureRequest.CONTROL_MODE_OFF);
+
+                                // If you just disabling auto-exposure, leaving auto-focus and auto-white-balance running:
+                                previewRequestBuilder.set(
+                                        CaptureRequest.CONTROL_AE_MODE,
+                                        CaptureRequest.CONTROL_AE_MODE_OFF);
+
+                                // Once you've disabled AE, you can manually control exposure time, sensitivity (ISO), and frame duration):
+//                                Long exposureTime;
+//                                previewRequestBuilder.set(CaptureRequest.SENSOR_EXPOSURE_TIME, exposureTime);
+//                                Integer sensitivity;
+//                                previewRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, sensitivity);
+//                                Long frameDuration;
+//                                previewRequestBuilder.set(CaptureRequest.SENSOR_FRAME_DURATION, frameDuration);
+
 
                                 // Finally, we start displaying the camera preview.
                                 previewRequest = previewRequestBuilder.build();
@@ -587,6 +568,35 @@ public class CameraConnectionFragment extends Fragment {
         }
 
         mOnGetPreviewListener.initialize(getActivity().getApplicationContext(), inferenceHandler);
+    }
+
+    /***********************************************************************************************
+     * Given {@code choices} of {@code Size}s supported by a camera, chooses the smallest one whose
+     * width and height are at least as large as the respective requested values, and whose aspect
+     * ratio matches with the specified value.
+     *
+     * @param choices     The list of sizes that the camera supports for the intended output class
+     * @param width       The minimum desired width
+     * @param height      The minimum desired height
+     * @return The optimal {@code Size}, or an arbitrary one if none were big enough
+     */
+    private static Size chooseOptimalSize(Size[] choices, int width, int height) {
+        // Collect the supported resolutions that are at least as big as the preview Surface
+        List<Size> bigEnough = new ArrayList<>();
+        for (Size option : choices) {
+            Log.d(TAG, String.format("Available sizes: W: %d, h: %d", option.getWidth(), option.getHeight()));
+            if (option.getWidth() == width && option.getHeight() == height) {
+                bigEnough.add(option);
+            }
+        }
+
+        // Pick the smallest of those, assuming we found any
+        if (bigEnough.size() > 0) {
+            return Collections.min(bigEnough, new CompareSizesByArea());
+        } else {
+            Log.e(TAG, "Couldn't find any suitable preview size, requested width: " + width + ", height: " + height);
+            return choices[0];
+        }
     }
 
     /**

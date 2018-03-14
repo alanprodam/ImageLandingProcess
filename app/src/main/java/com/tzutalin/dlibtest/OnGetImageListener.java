@@ -156,13 +156,13 @@ public class OnGetImageListener implements OnImageAvailableListener {
         Bitmap bm32 = rgbaImage.copy(Config.ARGB_8888,true);
         Utils.bitmapToMat(bm32,rgbaMat);
 
-        Mat grayMat = new Mat (rgbaImage.getHeight(), rgbaImage.getWidth(), CvType.CV_8UC1, Scalar.all(255));
-        Imgproc.cvtColor(rgbaMat, grayMat, Imgproc.COLOR_RGB2GRAY, 1);
+        //Mat grayMat = new Mat (rgbaImage.getHeight(), rgbaImage.getWidth(), CvType.CV_8UC1, Scalar.all(255));
+        //Imgproc.cvtColor(rgbaMat, grayMat, Imgproc.COLOR_RGB2GRAY, 1);
 
         //Mat rgbMat = new Mat(rgbaImage.getWidth(), rgbaImage.getHeight(), CvType.CV_8UC3, Scalar.all(255));
         //Imgproc.cvtColor(rgbaMat, rgbMat, Imgproc.COLOR_RGB2BGR, 3);
 
-        return grayMat;
+        return rgbaMat;
     }
 
     private Bitmap converMattoBitmap(Mat rgbaMat){
@@ -257,15 +257,15 @@ public class OnGetImageListener implements OnImageAvailableListener {
                     public void run() {
 
                         long startTime = System.currentTimeMillis();
-//                        List<VisionDetRet> results;
                         synchronized (OnGetImageListener.this) {
                             Mat matInput = convertBitmaptoMat(mCroppedBitmap);
 
-                            OpencvNativeClass.FindFeatures(matInput.getNativeObjAddr());
+                            Mat matOutput = new Mat(mCroppedBitmap.getWidth(), mCroppedBitmap.getWidth(), CvType.CV_8UC1, Scalar.all(255));
 
-                            mCroppedBitmap = converMattoBitmap(matInput);
+                            OpencvNativeClass.covertGray(matInput.getNativeObjAddr(), matOutput.getNativeObjAddr());
+                            OpencvNativeClass.FindFeatures(matOutput.getNativeObjAddr());
 
-                            //results = mFaceDet.detect(mCroppedBitmap);
+                            mCroppedBitmap = converMattoBitmap(matOutput);
                         }
                         long endTime = System.currentTimeMillis();
                         //Log.d(TAG,"Time cost: " + String.valueOf((endTime - startTime) / 10000f) + " sec");
