@@ -45,6 +45,7 @@ import android.media.ImageReader;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.HandlerThread;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.util.Log;
 import android.util.Range;
@@ -449,20 +450,16 @@ public class CameraConnectionFragment extends Fragment {
 
     private final OnGetImageListener mOnGetPreviewListener = new OnGetImageListener();
 
-    private final CameraCaptureSession.CaptureCallback captureCallback =
-            new CameraCaptureSession.CaptureCallback() {
+    private final CameraCaptureSession.CaptureCallback captureCallback = new
+            CameraCaptureSession.CaptureCallback() {
                 @Override
-                public void onCaptureProgressed(
-                        final CameraCaptureSession session,
-                        final CaptureRequest request,
-                        final CaptureResult partialResult) {
+                public void onCaptureProgressed(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull CaptureResult partialResult) {
+                    super.onCaptureProgressed(session, request, partialResult);
                 }
 
                 @Override
-                public void onCaptureCompleted(
-                        final CameraCaptureSession session,
-                        final CaptureRequest request,
-                        final TotalCaptureResult result) {
+                public void onCaptureCompleted(@NonNull CameraCaptureSession session, @NonNull CaptureRequest request, @NonNull TotalCaptureResult result) {
+                    super.onCaptureCompleted(session, request, result);
                 }
             };
 
@@ -496,17 +493,6 @@ public class CameraConnectionFragment extends Fragment {
             previewReader.setOnImageAvailableListener(mOnGetPreviewListener, backgroundHandler);
             previewRequestBuilder.addTarget(previewReader.getSurface());
 
-//            previewRequestBuilder.set(
-//                    CaptureRequest.CONTROL_MODE,
-//                    CameraMetadata.INFO_SUPPORTED_HARDWARE_LEVEL_FULL);
-
-//            Range<Integer> range2 = previewRequestBuilder.get(CameraCharacteristics.SENSOR_INFO_SENSITIVITY_RANGE);
-//            int max1 = range2.getUpper();//10000
-//            int min1 = range2.getLower();//100
-            //int iso = ((progress * (max1 - min1)) / 100 + min1);
-            // set the sensitivity of ISO
-            //previewRequestBuilder.set(CaptureRequest.SENSOR_SENSITIVITY, iso);
-
             // Here, we create a CameraCaptureSession for camera preview.
             cameraDevice.createCaptureSession(
                     Arrays.asList(surface, previewReader.getSurface()),
@@ -528,30 +514,39 @@ public class CameraConnectionFragment extends Fragment {
 
 
 
-                                // AF is currently performing an AF scan initiated the camera device in a continuous autofocus mode.
+//                                // AF is currently performing an AF scan initiated the camera device in a continuous autofocus mode.
                                 previewRequestBuilder.set(
                                         CaptureRequest.CONTROL_AF_MODE,
-                                        CaptureRequest.CONTROL_AF_STATE_PASSIVE_SCAN);
-
-                                // The desired setting for the camera device's auto-exposure algorithm's antibanding compensation.
+                                        CameraMetadata.CONTROL_AF_STATE_PASSIVE_SCAN);
+//
+//                                // The desired setting for the camera device's auto-exposure algorithm's antibanding compensation.
                                 previewRequestBuilder.set(
                                         CaptureRequest.CONTROL_AE_ANTIBANDING_MODE,
-                                        CaptureRequest.CONTROL_AE_ANTIBANDING_MODE_AUTO);
-
-                                //
+                                        CameraMetadata.CONTROL_AE_ANTIBANDING_MODE_OFF);
+//
+//                                //
                                 previewRequestBuilder.set(
                                         CaptureRequest.CONTROL_SCENE_MODE,
-                                        CaptureRequest.CONTROL_SCENE_MODE_ACTION);
+                                        CameraMetadata.CONTROL_SCENE_MODE_ACTION);
+//
+//                                // Flash is automatically enabled when necessary.
+//                                previewRequestBuilder.set(
+//                                        CaptureRequest.CONTROL_AE_MODE,
+//                                        CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
+//
+//                                previewRequestBuilder.set(
+//                                        CaptureRequest.CONTROL_AWB_MODE,
+//                                        CaptureRequest.CONTROL_AWB_MODE_INCANDESCENT);
 
-                                // Flash is automatically enabled when necessary.
-                                previewRequestBuilder.set(
-                                        CaptureRequest.CONTROL_AE_MODE,
-                                        CaptureRequest.CONTROL_AE_MODE_ON_AUTO_FLASH);
+//                                previewRequestBuilder.set(
+//                                        CaptureRequest.CONTROL_EFFECT_MODE,
+//                                        CameraMetadata.CONTROL_EFFECT_MODE_NEGATIVE);
 
-                                // The desired mode for the camera device's auto-exposure routine.
-                                previewRequestBuilder.set(
-                                        CaptureRequest.CONTROL_AE_MODE,
-                                        CaptureRequest.CONTROL_AE_MODE_ON_ALWAYS_FLASH);
+
+//                                // Flash mode
+//                                previewRequestBuilder.set(
+//                                        CaptureRequest.FLASH_MODE,
+//                                        CaptureRequest.FLASH_MODE_SINGLE);
 
 
 

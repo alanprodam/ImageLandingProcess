@@ -276,7 +276,7 @@ public class OnGetImageListener implements OnImageAvailableListener {
                         //Log.d(TAG,"FPS cost: " + String.valueOf(1/((endTime - startTime) / 10000f)) + " framas/sec");
 
 
-                        mWindow.setRGBBitmap(mCroppedBitmap);
+                        //mWindow.setRGBBitmap(mCroppedBitmap);
                         mIsComputing = false;
                     }
                 });
