@@ -24,10 +24,10 @@ android {
     }
     task ndkBuild(type: Exec, description: 'Compile JNI source via NDK') {
         commandLine "/home/alantavares/Android/Sdk/ndk-bundle/ndk-build",
-                'NDK_PROJECT_PATH=/home/alantavares/AndroidStudioProjects/dlib-android-app/app/build/intermediates/ndk',
-                'NDK_LIBS_OUT=/home/alantavares/AndroidStudioProjects/dlib-android-app/app/src/main/jniLibs',
-                'APP_BUILD_SCRIPT=/home/alantavares/AndroidStudioProjects/dlib-android-app/app/src/main/jni/Android.mk',
-                'NDK_APPLICATION_MK=/home/alantavares/AndroidStudioProjects/dlib-android-app/app/src/main/jni/Application.mk'
+                'NDK_PROJECT_PATH=/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/ndk',
+                'NDK_LIBS_OUT=/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/src/main/jniLibs',
+                'APP_BUILD_SCRIPT=/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/src/main/jni/Android.mk',
+                'NDK_APPLICATION_MK=/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/src/main/jni/Application.mk'
     }
     tasks.withType(JavaCompile) {
         compileTask -> compileTask.dependsOn ndkBuild
