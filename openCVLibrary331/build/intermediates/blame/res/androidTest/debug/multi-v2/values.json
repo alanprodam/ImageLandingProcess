@@ -5,6 +5,14 @@
             "map": []
         },
         {
+            "outputFile": "/home/alantavares/AndroidStudioProjects/ImageLanding Process/openCVLibrary331/build/intermediates/res/merged/androidTest/debug/values/values.xml",
+            "map": []
+        },
+        {
+            "outputFile": "/home/alantavares/AndroidStudioProjects/ImageLanding Process/openCVLibrary331/build/intermediates/incremental/mergeDebugAndroidTestResources/merged.dir/values/values.xml",
+            "map": []
+        },
+        {
             "outputFile": "/home/alantavares/AndroidStudioProjects/dlib-android-app/openCVLibrary331/build/intermediates/incremental/mergeDebugAndroidTestResources/merged.dir/values/values.xml",
             "map": []
         }
