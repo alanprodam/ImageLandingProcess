@@ -21,6 +21,7 @@ import android.content.res.AssetManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.Bitmap.Config;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
@@ -40,8 +41,15 @@ import android.view.WindowManager;
 import com.tzutalin.dlib.Constants;
 import com.tzutalin.dlib.FaceDet;
 import com.tzutalin.dlib.VisionDetRet;
+import com.tzutalin.dlibtest.nativeclass.OpencvNativeClass;
 
 import junit.framework.Assert;
+
+import org.opencv.android.Utils;
+import org.opencv.core.CvType;
+import org.opencv.core.Mat;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -51,10 +59,9 @@ import java.util.List;
  * Class that takes in preview frames and converts the image to Bitmaps to process with dlib lib.
  */
 public class OnGetImageListener implements OnImageAvailableListener {
-    private static final boolean SAVE_PREVIEW_BITMAP = false;
 
-    private static final int INPUT_SIZE = 224;
-    private static final String TAG = "OnGetImageListener";
+    private static final int INPUT_SIZE = 320;
+    private static final String TAG = OnGetImageListener.class.getName();
 
     private int mScreenRotation = 90;
 
@@ -70,17 +77,14 @@ public class OnGetImageListener implements OnImageAvailableListener {
 
     private Context mContext;
     private FaceDet mFaceDet;
-    private TrasparentTitleView mTransparentTitleView;
     private FloatingCameraWindow mWindow;
     private Paint mFaceLandmardkPaint;
 
     public void initialize(
             final Context context,
-            final AssetManager assetManager,
-            final TrasparentTitleView scoreView,
             final Handler handler) {
+
         this.mContext = context;
-        this.mTransparentTitleView = scoreView;
         this.mInferenceHandler = handler;
         mFaceDet = new FaceDet(Constants.getFaceShapeModelPath());
         mWindow = new FloatingCameraWindow(mContext);
@@ -89,13 +93,14 @@ public class OnGetImageListener implements OnImageAvailableListener {
         mFaceLandmardkPaint.setColor(Color.GREEN);
         mFaceLandmardkPaint.setStrokeWidth(2);
         mFaceLandmardkPaint.setStyle(Paint.Style.STROKE);
+
     }
 
     public void deInitialize() {
         synchronized (OnGetImageListener.this) {
-            if (mFaceDet != null) {
-                mFaceDet.release();
-            }
+//            if (mFaceDet != null) {
+//                mFaceDet.release();
+//            }
 
             if (mWindow != null) {
                 mWindow.release();
@@ -111,7 +116,7 @@ public class OnGetImageListener implements OnImageAvailableListener {
         getOrient.getSize(point);
         int screen_width = point.x;
         int screen_height = point.y;
-        Log.d(TAG, String.format("screen size (%d,%d)", screen_width, screen_height));
+        //Log.d(TAG, String.format("screen size (%d,%d)", screen_width, screen_height));
         if (screen_width < screen_height) {
             orientation = Configuration.ORIENTATION_PORTRAIT;
             mScreenRotation = 90;
@@ -121,7 +126,7 @@ public class OnGetImageListener implements OnImageAvailableListener {
         }
 
         Assert.assertEquals(dst.getWidth(), dst.getHeight());
-        final float minDim = Math.min(src.getWidth(), src.getHeight());
+        final float minDim = Math.min(src.getWidth()/2, src.getHeight()/2);
 
         final Matrix matrix = new Matrix();
 
@@ -142,6 +147,31 @@ public class OnGetImageListener implements OnImageAvailableListener {
 
         final Canvas canvas = new Canvas(dst);
         canvas.drawBitmap(src, matrix, null);
+    }
+
+    private Mat convertBitmaptoMat(Bitmap rgbaImage){
+
+        // convert Java Bitmap into OpenCV Mat
+        Mat rgbaMat = new Mat(rgbaImage.getWidth(), rgbaImage.getHeight(), CvType.CV_8UC4, Scalar.all(255));
+        Bitmap bm32 = rgbaImage.copy(Config.ARGB_8888,true);
+        Utils.bitmapToMat(bm32,rgbaMat);
+
+        //Mat grayMat = new Mat (rgbaImage.getHeight(), rgbaImage.getWidth(), CvType.CV_8UC1, Scalar.all(255));
+        //Imgproc.cvtColor(rgbaMat, grayMat, Imgproc.COLOR_RGB2GRAY, 1);
+
+        //Mat rgbMat = new Mat(rgbaImage.getWidth(), rgbaImage.getHeight(), CvType.CV_8UC3, Scalar.all(255));
+        //Imgproc.cvtColor(rgbaMat, rgbMat, Imgproc.COLOR_RGB2BGR, 3);
+
+        return rgbaMat;
+    }
+
+    private Bitmap converMattoBitmap(Mat rgbaMat){
+
+        Bitmap bmOutput = Bitmap.createBitmap(rgbaMat.width(),rgbaMat.height(), Config.ARGB_8888);
+        //Bitmap bmOutput = Bitmap.createBitmap(rgbaMat.rows(),rgbaMat.cols(), Config.ARGB_4444);
+        Utils.matToBitmap(rgbaMat,bmOutput);
+
+        return bmOutput;
     }
 
     @Override
@@ -170,10 +200,13 @@ public class OnGetImageListener implements OnImageAvailableListener {
                 mPreviewWdith = image.getWidth();
                 mPreviewHeight = image.getHeight();
 
-                Log.d(TAG, String.format("Initializing at size %dx%d", mPreviewWdith, mPreviewHeight));
+                Log.d(TAG, String.format("mPreview: Initializing[mPreviewWdith] at size %dx%d", mPreviewWdith, mPreviewHeight));
+
                 mRGBBytes = new int[mPreviewWdith * mPreviewHeight];
                 mRGBframeBitmap = Bitmap.createBitmap(mPreviewWdith, mPreviewHeight, Config.ARGB_8888);
-                mCroppedBitmap = Bitmap.createBitmap(INPUT_SIZE, INPUT_SIZE, Config.ARGB_8888);
+                mCroppedBitmap = Bitmap.createBitmap(mPreviewWdith, mPreviewHeight, Config.ARGB_8888);
+
+                Log.d(TAG, String.format("mCroppedBitmap Initializing[mCroppedBitmap] at size %dx%d", mCroppedBitmap.getWidth(), mCroppedBitmap.getHeight()));
 
                 mYUVBytes = new byte[planes.length][];
                 for (int i = 0; i < planes.length; ++i) {
@@ -188,6 +221,8 @@ public class OnGetImageListener implements OnImageAvailableListener {
             final int yRowStride = planes[0].getRowStride();
             final int uvRowStride = planes[1].getRowStride();
             final int uvPixelStride = planes[1].getPixelStride();
+
+            // convert image YUV420 to ARGB8888
             ImageUtils.convertYUV420ToARGB8888(
                     mYUVBytes[0],
                     mYUVBytes[1],
@@ -211,49 +246,37 @@ public class OnGetImageListener implements OnImageAvailableListener {
         }
 
         mRGBframeBitmap.setPixels(mRGBBytes, 0, mPreviewWdith, 0, 0, mPreviewWdith, mPreviewHeight);
-        drawResizedBitmap(mRGBframeBitmap, mCroppedBitmap);
 
-        if (SAVE_PREVIEW_BITMAP) {
-            ImageUtils.saveBitmap(mCroppedBitmap);
-        }
+        //Log.d(TAG, String.format("Initializing[mRGBframeBitmap] at size %dx%d", mRGBframeBitmap.getWidth(), mRGBframeBitmap.getHeight()));
+
+        // you need active the function drawResized
+        //drawResizedBitmap(mRGBframeBitmap, mCroppedBitmap);
+        mCroppedBitmap = mRGBframeBitmap;
+
+        Log.d(TAG, String.format("mCroppedBitmap Initializing[mCroppedBitmap] at size %dx%d", mCroppedBitmap.getWidth(), mCroppedBitmap.getHeight()));
+
 
         mInferenceHandler.post(
                 new Runnable() {
                     @Override
                     public void run() {
-                        if (!new File(Constants.getFaceShapeModelPath()).exists()) {
-                            mTransparentTitleView.setText("Copying landmark model to " + Constants.getFaceShapeModelPath());
-                            FileUtils.copyFileFromRawToOthers(mContext, R.raw.shape_predictor_68_face_landmarks, Constants.getFaceShapeModelPath());
-                        }
 
                         long startTime = System.currentTimeMillis();
-                        List<VisionDetRet> results;
+
                         synchronized (OnGetImageListener.this) {
-                            results = mFaceDet.detect(mCroppedBitmap);
+
+                            Mat matInput = convertBitmaptoMat(mCroppedBitmap);
+                            Mat matOutput = new Mat(mCroppedBitmap.getWidth(), mCroppedBitmap.getWidth(), CvType.CV_8UC1, Scalar.all(255));
+                            OpencvNativeClass.covertGray(matInput.getNativeObjAddr(), matOutput.getNativeObjAddr());
+                            OpencvNativeClass.FindFeatures(matOutput.getNativeObjAddr());
+                            mCroppedBitmap = converMattoBitmap(matOutput);
+                            //ImageUtils.saveBitmap(mCroppedBitmap);
+
                         }
                         long endTime = System.currentTimeMillis();
-                        mTransparentTitleView.setText("Time cost: " + String.valueOf((endTime - startTime) / 1000f) + " sec");
-                        // Draw on bitmap
-                        if (results != null) {
-                            for (final VisionDetRet ret : results) {
-                                float resizeRatio = 1.0f;
-                                Rect bounds = new Rect();
-                                bounds.left = (int) (ret.getLeft() * resizeRatio);
-                                bounds.top = (int) (ret.getTop() * resizeRatio);
-                                bounds.right = (int) (ret.getRight() * resizeRatio);
-                                bounds.bottom = (int) (ret.getBottom() * resizeRatio);
-                                Canvas canvas = new Canvas(mCroppedBitmap);
-                                canvas.drawRect(bounds, mFaceLandmardkPaint);
+                        Log.d(TAG,"Time cost: " + String.valueOf((endTime - startTime) / 10000f) + " sec");
+                        //Log.d(TAG,"FPS cost: " + String.valueOf(1/((endTime - startTime) / 10000f)) + " framas/sec");
 
-                                // Draw landmark
-                                ArrayList<Point> landmarks = ret.getFaceLandmarks();
-                                for (Point point : landmarks) {
-                                    int pointX = (int) (point.x * resizeRatio);
-                                    int pointY = (int) (point.y * resizeRatio);
-                                    canvas.drawCircle(pointX, pointY, 2, mFaceLandmardkPaint);
-                                }
-                            }
-                        }
 
                         mWindow.setRGBBitmap(mCroppedBitmap);
                         mIsComputing = false;

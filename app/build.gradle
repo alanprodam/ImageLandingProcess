@@ -19,10 +19,18 @@ android {
         }
     }
 
-    sourceSets {
-        main {
-            assets.srcDirs = ['src/main/res/raw']
-        }
+    sourceSets.main {
+        jni.srcDirs = [] //disable automatic ndk-build call
+    }
+    task ndkBuild(type: Exec, description: 'Compile JNI source via NDK') {
+        commandLine "/home/alantavares/Android/Sdk/ndk-bundle/ndk-build",
+                'NDK_PROJECT_PATH=/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/ndk',
+                'NDK_LIBS_OUT=/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/src/main/jniLibs',
+                'APP_BUILD_SCRIPT=/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/src/main/jni/Android.mk',
+                'NDK_APPLICATION_MK=/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/src/main/jni/Application.mk'
+    }
+    tasks.withType(JavaCompile) {
+        compileTask -> compileTask.dependsOn ndkBuild
     }
 }
 
@@ -39,18 +47,18 @@ repositories {
 }
 
 dependencies {
-    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    implementation fileTree(include: ['*.jar'], dir: 'libs')
     implementation "com.android.support:appcompat-v7:${rootProject.ext.androidSupportSdkVersion}"
     implementation "com.android.support:design:${rootProject.ext.androidSupportSdkVersion}"
     implementation 'com.github.dexafree:materiallist:3.0.1'
     implementation 'com.jakewharton.timber:timber:4.5.1'
     implementation project(':dlib')
-
     // Add AndroidJUnit
     androidTestImplementation "com.android.support:support-annotations:${rootProject.ext.androidSupportSdkVersion}"
     androidTestImplementation 'com.android.support.test:runner:0.5'
     androidTestImplementation 'com.android.support.test:rules:0.5'
     // Optional -- Hamcrest library
     androidTestCompile 'org.hamcrest:hamcrest-library:1.3'
+    implementation project(':openCVLibrary331')
 }
 apply plugin: 'com.jakewharton.hugo'
