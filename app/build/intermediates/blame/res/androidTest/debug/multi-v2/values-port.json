@@ -1,0 +1,34 @@
+{
+    "logs": [
+        {
+            "outputFile": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/res/merged/androidTest/debug/values-port/values-port.xml",
+            "map": [
+                {
+                    "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/values-port/values-port.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "55",
+                        "endOffsets": "106"
+                    }
+                }
+            ]
+        },
+        {
+            "outputFile": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/incremental/mergeDebugAndroidTestResources/merged.dir/values-port/values-port.xml",
+            "map": [
+                {
+                    "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/values-port/values-port.xml",
+                    "from": {
+                        "startLines": "2",
+                        "startColumns": "4",
+                        "startOffsets": "55",
+                        "endColumns": "55",
+                        "endOffsets": "106"
+                    }
+                }
+            ]
+        }
+    ]
+}

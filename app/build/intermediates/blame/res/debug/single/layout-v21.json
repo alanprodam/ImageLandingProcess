@@ -1,0 +1,18 @@
+[
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/res/merged/debug/layout-v21/notification_template_icon_group.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/layout-v21/notification_template_icon_group.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/res/merged/debug/layout-v21/notification_action.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/layout-v21/notification_action.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/res/merged/debug/layout-v21/notification_action_tombstone.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/layout-v21/notification_action_tombstone.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/res/merged/debug/layout-v21/notification_template_custom_big.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/layout-v21/notification_template_custom_big.xml"
+    }
+]

@@ -1,0 +1,46 @@
+[
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/res/merged/debug/color-v23/abc_tint_seek_thumb.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/color-v23/abc_tint_seek_thumb.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/res/merged/debug/color-v23/abc_btn_colored_text_material.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/color-v23/abc_btn_colored_text_material.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/res/merged/debug/color-v23/abc_color_highlight_material.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/color-v23/abc_color_highlight_material.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/res/merged/debug/color-v23/abc_tint_btn_checkable.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/color-v23/abc_tint_btn_checkable.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/res/merged/debug/color-v23/abc_tint_switch_thumb.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/color-v23/abc_tint_switch_thumb.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/res/merged/debug/color-v23/abc_tint_switch_track.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/color-v23/abc_tint_switch_track.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/res/merged/debug/color-v23/design_tint_password_toggle.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/design-25.3.1.aar/590491405b26d713ce67870595df9dc9/res/color-v23/design_tint_password_toggle.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/res/merged/debug/color-v23/abc_tint_edittext.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/color-v23/abc_tint_edittext.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/res/merged/debug/color-v23/abc_tint_spinner.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/color-v23/abc_tint_spinner.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/res/merged/debug/color-v23/abc_tint_default.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/color-v23/abc_tint_default.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/res/merged/debug/color-v23/abc_btn_colored_borderless_text_material.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/color-v23/abc_btn_colored_borderless_text_material.xml"
+    }
+]

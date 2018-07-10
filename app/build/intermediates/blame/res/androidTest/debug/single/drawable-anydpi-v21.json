@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/res/merged/androidTest/debug/drawable-anydpi-v21/design_ic_visibility_off.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/design-25.3.1.aar/590491405b26d713ce67870595df9dc9/res/drawable-anydpi-v21/design_ic_visibility_off.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/res/merged/androidTest/debug/drawable-anydpi-v21/design_ic_visibility.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/design-25.3.1.aar/590491405b26d713ce67870595df9dc9/res/drawable-anydpi-v21/design_ic_visibility.xml"
+    }
+]

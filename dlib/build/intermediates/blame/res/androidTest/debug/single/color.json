@@ -1,0 +1,46 @@
+[
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/dlib/build/intermediates/res/merged/androidTest/debug/color/abc_hint_foreground_material_dark.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/color/abc_hint_foreground_material_dark.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/dlib/build/intermediates/res/merged/androidTest/debug/color/abc_primary_text_material_dark.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/color/abc_primary_text_material_dark.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/dlib/build/intermediates/res/merged/androidTest/debug/color/abc_secondary_text_material_dark.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/color/abc_secondary_text_material_dark.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/dlib/build/intermediates/res/merged/androidTest/debug/color/abc_search_url_text.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/color/abc_search_url_text.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/dlib/build/intermediates/res/merged/androidTest/debug/color/abc_primary_text_disable_only_material_light.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/color/abc_primary_text_disable_only_material_light.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/dlib/build/intermediates/res/merged/androidTest/debug/color/abc_secondary_text_material_light.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/color/abc_secondary_text_material_light.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/dlib/build/intermediates/res/merged/androidTest/debug/color/abc_primary_text_material_light.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/color/abc_primary_text_material_light.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/dlib/build/intermediates/res/merged/androidTest/debug/color/abc_primary_text_disable_only_material_dark.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/color/abc_primary_text_disable_only_material_dark.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/dlib/build/intermediates/res/merged/androidTest/debug/color/abc_hint_foreground_material_light.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/color/abc_hint_foreground_material_light.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/dlib/build/intermediates/res/merged/androidTest/debug/color/switch_thumb_material_dark.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/color/switch_thumb_material_dark.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/dlib/build/intermediates/res/merged/androidTest/debug/color/switch_thumb_material_light.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/appcompat-v7-25.3.1.aar/bd890706fac36ca8d61681fa01b3e409/res/color/switch_thumb_material_light.xml"
+    }
+]

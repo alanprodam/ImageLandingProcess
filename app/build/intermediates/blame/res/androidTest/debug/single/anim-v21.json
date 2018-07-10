@@ -1,0 +1,10 @@
+[
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/res/merged/androidTest/debug/anim-v21/design_bottom_sheet_slide_out.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/design-25.3.1.aar/590491405b26d713ce67870595df9dc9/res/anim-v21/design_bottom_sheet_slide_out.xml"
+    },
+    {
+        "merged": "/home/alantavares/AndroidStudioProjects/ProjetosConnectRobotic/ImageLandingProcess/app/build/intermediates/res/merged/androidTest/debug/anim-v21/design_bottom_sheet_slide_in.xml",
+        "source": "/home/alantavares/.gradle/caches/transforms-1/files-1.1/design-25.3.1.aar/590491405b26d713ce67870595df9dc9/res/anim-v21/design_bottom_sheet_slide_in.xml"
+    }
+]
