@@ -60,8 +60,7 @@ import java.util.List;
  */
 public class OnGetImageListener implements OnImageAvailableListener {
 
-    private static final int INPUT_WIDTH_SIZE = 320;
-    private static final int INPUT_HEIGTH_SIZE = 240;
+    private static final int INPUT_SIZE = 320;
     private static final String TAG = OnGetImageListener.class.getName();
 
     private int mScreenRotation = 90;
@@ -127,7 +126,7 @@ public class OnGetImageListener implements OnImageAvailableListener {
         }
 
         Assert.assertEquals(dst.getWidth(), dst.getHeight());
-        final float minDim = Math.min(src.getWidth(), src.getHeight());
+        final float minDim = Math.min(src.getWidth()/2, src.getHeight()/2);
 
         final Matrix matrix = new Matrix();
 
@@ -201,13 +200,13 @@ public class OnGetImageListener implements OnImageAvailableListener {
                 mPreviewWdith = image.getWidth();
                 mPreviewHeight = image.getHeight();
 
-                Log.d(TAG, String.format("Initializing[mPreviewWdith] at size %dx%d", mPreviewWdith, mPreviewHeight));
+                Log.d(TAG, String.format("mPreview: Initializing[mPreviewWdith] at size %dx%d", mPreviewWdith, mPreviewHeight));
 
                 mRGBBytes = new int[mPreviewWdith * mPreviewHeight];
                 mRGBframeBitmap = Bitmap.createBitmap(mPreviewWdith, mPreviewHeight, Config.ARGB_8888);
                 mCroppedBitmap = Bitmap.createBitmap(mPreviewWdith, mPreviewHeight, Config.ARGB_8888);
 
-                Log.d(TAG, String.format("Initializing[mCroppedBitmap] at size %dx%d", mCroppedBitmap.getWidth(), mCroppedBitmap.getHeight()));
+                Log.d(TAG, String.format("mCroppedBitmap Initializing[mCroppedBitmap] at size %dx%d", mCroppedBitmap.getWidth(), mCroppedBitmap.getHeight()));
 
                 mYUVBytes = new byte[planes.length][];
                 for (int i = 0; i < planes.length; ++i) {
@@ -250,9 +249,12 @@ public class OnGetImageListener implements OnImageAvailableListener {
 
         //Log.d(TAG, String.format("Initializing[mRGBframeBitmap] at size %dx%d", mRGBframeBitmap.getWidth(), mRGBframeBitmap.getHeight()));
 
+        // you need active the function drawResized
         //drawResizedBitmap(mRGBframeBitmap, mCroppedBitmap);
-
         mCroppedBitmap = mRGBframeBitmap;
+
+        Log.d(TAG, String.format("mCroppedBitmap Initializing[mCroppedBitmap] at size %dx%d", mCroppedBitmap.getWidth(), mCroppedBitmap.getHeight()));
+
 
         mInferenceHandler.post(
                 new Runnable() {
@@ -276,7 +278,7 @@ public class OnGetImageListener implements OnImageAvailableListener {
                         //Log.d(TAG,"FPS cost: " + String.valueOf(1/((endTime - startTime) / 10000f)) + " framas/sec");
 
 
-                        //mWindow.setRGBBitmap(mCroppedBitmap);
+                        mWindow.setRGBBitmap(mCroppedBitmap);
                         mIsComputing = false;
                     }
                 });

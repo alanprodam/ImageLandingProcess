@@ -514,15 +514,15 @@ public class CameraConnectionFragment extends Fragment {
 
 
 
-//                                // AF is currently performing an AF scan initiated the camera device in a continuous autofocus mode.
+                                // AF is currently performing an AF scan initiated the camera device in a continuous autofocus mode.
                                 previewRequestBuilder.set(
                                         CaptureRequest.CONTROL_AF_MODE,
                                         CameraMetadata.CONTROL_AF_STATE_PASSIVE_SCAN);
 //
 //                                // The desired setting for the camera device's auto-exposure algorithm's antibanding compensation.
-                                previewRequestBuilder.set(
-                                        CaptureRequest.CONTROL_AE_ANTIBANDING_MODE,
-                                        CameraMetadata.CONTROL_AE_ANTIBANDING_MODE_OFF);
+//                                previewRequestBuilder.set(
+//                                        CaptureRequest.CONTROL_AE_ANTIBANDING_MODE,
+//                                        CameraMetadata.CONTROL_AE_ANTIBANDING_MODE_OFF);
 //
 //                                //
                                 previewRequestBuilder.set(
