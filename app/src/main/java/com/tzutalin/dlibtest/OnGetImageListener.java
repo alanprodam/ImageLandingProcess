@@ -1,19 +1,3 @@
-/*
- * Copyright 2016-present Tzutalin
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *       http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
-
 package com.tzutalin.dlibtest;
 
 import android.content.Context;
@@ -49,11 +33,6 @@ import org.opencv.android.Utils;
 import org.opencv.core.CvType;
 import org.opencv.core.Mat;
 import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
-
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
 
 /**
  * Class that takes in preview frames and converts the image to Bitmaps to process with dlib lib.
@@ -149,7 +128,7 @@ public class OnGetImageListener implements OnImageAvailableListener {
         canvas.drawBitmap(src, matrix, null);
     }
 
-    private Mat convertBitmaptoMat(Bitmap rgbaImage){
+    private Mat convertBitmapToMat(Bitmap rgbaImage){
 
         // convert Java Bitmap into OpenCV Mat
         Mat rgbaMat = new Mat(rgbaImage.getWidth(), rgbaImage.getHeight(), CvType.CV_8UC4, Scalar.all(255));
@@ -165,7 +144,7 @@ public class OnGetImageListener implements OnImageAvailableListener {
         return rgbaMat;
     }
 
-    private Bitmap converMattoBitmap(Mat rgbaMat){
+    private Bitmap converMatToBitmap(Mat rgbaMat){
 
         Bitmap bmOutput = Bitmap.createBitmap(rgbaMat.width(),rgbaMat.height(), Config.ARGB_8888);
         //Bitmap bmOutput = Bitmap.createBitmap(rgbaMat.rows(),rgbaMat.cols(), Config.ARGB_4444);
@@ -200,7 +179,7 @@ public class OnGetImageListener implements OnImageAvailableListener {
                 mPreviewWdith = image.getWidth();
                 mPreviewHeight = image.getHeight();
 
-                Log.d(TAG, String.format("mPreview: Initializing[mPreviewWdith] at size %dx%d", mPreviewWdith, mPreviewHeight));
+                Log.d(TAG, String.format("mPreview: Initializing[mPreview] at size %dx%d", mPreviewWdith, mPreviewHeight));
 
                 mRGBBytes = new int[mPreviewWdith * mPreviewHeight];
                 mRGBframeBitmap = Bitmap.createBitmap(mPreviewWdith, mPreviewHeight, Config.ARGB_8888);
@@ -253,7 +232,7 @@ public class OnGetImageListener implements OnImageAvailableListener {
         //drawResizedBitmap(mRGBframeBitmap, mCroppedBitmap);
         mCroppedBitmap = mRGBframeBitmap;
 
-        Log.d(TAG, String.format("mCroppedBitmap Initializing[mCroppedBitmap] at size %dx%d", mCroppedBitmap.getWidth(), mCroppedBitmap.getHeight()));
+        //Log.d(TAG, String.format("mCroppedBitmap Initializing[mCroppedBitmap] at size %dx%d", mCroppedBitmap.getWidth(), mCroppedBitmap.getHeight()));
 
 
         mInferenceHandler.post(
@@ -265,11 +244,13 @@ public class OnGetImageListener implements OnImageAvailableListener {
 
                         synchronized (OnGetImageListener.this) {
 
-                            Mat matInput = convertBitmaptoMat(mCroppedBitmap);
+                            Mat matInput = convertBitmapToMat(mCroppedBitmap);
                             Mat matOutput = new Mat(mCroppedBitmap.getWidth(), mCroppedBitmap.getWidth(), CvType.CV_8UC1, Scalar.all(255));
+
                             OpencvNativeClass.covertGray(matInput.getNativeObjAddr(), matOutput.getNativeObjAddr());
                             OpencvNativeClass.FindFeatures(matOutput.getNativeObjAddr());
-                            mCroppedBitmap = converMattoBitmap(matOutput);
+
+                            mCroppedBitmap = converMatToBitmap(matOutput);
                             //ImageUtils.saveBitmap(mCroppedBitmap);
 
                         }

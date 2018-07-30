@@ -9,9 +9,6 @@ OPENCV_INSTALL_MODULES:=on
 OPENCV_LIB_TYPE:=SHARED
 include ${OPENCVROOT}/sdk/native/jni/OpenCV.mk
 
-#aruco
-
-
 LOCAL_SRC_FILES := main-ndk.cpp
 
 LOCAL_LDLIBS     += -llog -ldl

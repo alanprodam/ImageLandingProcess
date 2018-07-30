@@ -341,7 +341,8 @@ public class CameraConnectionFragment extends Fragment {
                 // Danger, W.R.! Attempting to use too large a preview size could  exceed the camera
                 // bus' bandwidth limitation, resulting in gorgeous previews but the storage of
                 // garbage capture data.
-                previewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class), WIDTH_PREVIEW_SIZE, HEIGHT_PREVIEW_SIZE);
+                previewSize = chooseOptimalSize(map.getOutputSizes(SurfaceTexture.class),
+                        WIDTH_PREVIEW_SIZE, HEIGHT_PREVIEW_SIZE);
                 Log.d(TAG,"setUpCameraOutputs: " + previewSize.getWidth() + "x" + previewSize.getHeight());
 
                 CameraConnectionFragment.this.cameraId = cameraId;
